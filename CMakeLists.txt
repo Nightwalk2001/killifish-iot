@@ -11,10 +11,9 @@ include(CMakeListsPrivate.txt)
 
 include_directories(${PIO_PACKAGES}/PubSubClient/src)
 include_directories(".pio/libdeps/d1_mini/Cheap Stepper/src")
-include_directories(${PIO_PACKAGES}/Time)
 include_directories(${PIO_PACKAGES}/ArduinoJson/src)
 include_directories(${PIO_PACKAGES}/TaskScheduler/src)
-include_directories(${PIO_PACKAGES}/WifiManager)
+include_directories(${PIO_PACKAGES}/NTPClient)
 
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/CMakeListsUser.txt)
     include(CMakeListsUser.txt)

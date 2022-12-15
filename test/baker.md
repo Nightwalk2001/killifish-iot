@@ -1,38 +1,4 @@
-#include <Arduino.h>
-#include <ESP8266WiFi.h>
-#include <PubSubClient.h>
-#include <CheapStepper.h>
-#include <TaskScheduler.h>
-#include <ArduinoJson.h>
-#include <LittleFS.h>
-
-#define DEVICE_ID "esp01"
-
-const char *SSID = "mqtt";
-const char *PASSPHRASE = "12345678";
-
-const size_t CAPACITY = JSON_OBJECT_SIZE(3) + JSON_ARRAY_SIZE(2) + 60;
-
-const char *BROKER = "81.71.138.9";
-const int PORT = 1883;
-const char *USER = "admin";
-const char *PASSWORD = "public";
-const char *SUB_TOPIC = "feeding-times";
-const char *PUB_TOPIC = "feeding-res";
-const char *ERROR_TOPIC = "error-occur";
-
-const size_t CAP = JSON_ARRAY_SIZE(250);
-StaticJsonDocument<CAP> lightArray;
-
-#define BTN D5 // 按钮引脚
-#define INFRARED A0 // 红外线引脚
-#define INFRARED_LED D6 // 光强传感器LED引脚
-#define POWER_LED D4 // 电源LED引脚
-#define IN1 13 // 电机IN1引脚
-#define IN2 4 // 电机IN2引脚
-#define IN3 15 // 电机IN3引脚
-#define IN4 5 // 电机IN4引脚
-
+```c++
 const unsigned long PRESS_DURATION = 100; // 单击最小时间间隔100ms
 const unsigned long LONG_PRESS_DURATION = 3000; // 长按最小时间间隔3000ms
 
@@ -128,7 +94,7 @@ void feed(int c) {
 
 // 监测饲料是否成功掉下
 void inspect() {
-   unsigned long iter = i.getRunCounter();
+    unsigned long iter = i.getRunCounter();
 
     if (iter ==0 || iter % 2500 ==1) {
         digitalWrite(INFRARED_LED, HIGH);
@@ -207,7 +173,7 @@ void setupFs() {
 //    }
 
 }
-
+    
 void save() {
 
 }
@@ -231,3 +197,5 @@ void setup() {
 void loop() {
     ts.execute();
 }
+
+```

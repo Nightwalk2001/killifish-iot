@@ -1,13 +1,16 @@
 #include <Arduino.h>
-#include <wifi.cuh>
-
-Wifi wifi;
+#include <hal.hpp>
+#include <wifi.hpp>
+#include <task.hpp>
 
 void setup() {
-    Serial.begin(9600);
+    setupPinMode();
+    WiFiX::connect();
+    Mqtt::connect();
+    timeClient.begin();
+    setupFs();
 }
 
 void loop() {
-    Serial.println("hello");
-    delay(1000);
+    scheduler.execute();
 }
