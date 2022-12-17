@@ -1,7 +1,6 @@
 #ifndef TASK_HPP
 #define TASK_HPP
 
-//#include <Esp8266WiFi.h>
 #include <TaskSchedulerDeclarations.h>
 #include <config.h>
 #include <fs.hpp>
@@ -34,6 +33,7 @@ void cbk() {
 
 void reconnect() {
     if (WiFi.status() !=WL_CONNECTED) {
+        WiFiAvailable = false;
         WiFiX::connect();
         if (WiFiAvailable) Mqtt::connect();
     }
