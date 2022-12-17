@@ -8,33 +8,35 @@
 #include <wifi.hpp>
 #include <config.h>
 
-void callback(char *topic, byte *payload, unsigned int length) {
+void saveConfig(byte *raw) {
     DynamicJsonDocument doc(1024);
 
-    DeserializationError error = deserializeJson(doc, payload);
+    deserializeJson(doc, raw);
 
-    File f = LittleFS.open("./conf.json", "w");
+    File f = LittleFS.open(ConfigFile, "w");
     serializeJson(doc, f);
     f.close();
 }
 
+void callback(char *topic, byte *payload, unsigned int length) {
+    saveConfig(payload);
+}
+
 class Mqtt {
 public:
-    static bool available;
-
     Mqtt() = default;
 
     static void connect() {
-        available = false;
-        int count = 0;
+        uint8 count = 0;
 
         pubsub.setServer(BROKER, PORT);
 
-        while (!pubsub.connected())
-            if (pubsub.connect(DEVICE_ID, USER, PASSWORD) || ++count > 60) break;
-
-        if (count < 60) {
-            available = true;
+        while (!pubsub.connected()) {
+            delay(1000);
+            if (pubsub.connect(DEVICE_ID, USER, PASSWORD) || ++count > Threshold) break;
+        }
+        if (count < Threshold) {
+            MqttAvailable = true;
             pubsub.setCallback(callback);
             pubsub.subscribe(SUB_TOPIC);
         }

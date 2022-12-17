@@ -1,16 +1,16 @@
 #include <Arduino.h>
+#include <config.h>
 #include <hal.hpp>
-#include <wifi.hpp>
 #include <task.hpp>
 
 void setup() {
     setupPinMode();
     WiFiX::connect();
     Mqtt::connect();
-    timeClient.begin();
+//    timeClient.begin();
     setupFs();
 }
 
 void loop() {
-    scheduler.execute();
+    runner.execute();
 }

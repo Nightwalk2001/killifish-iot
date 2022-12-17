@@ -3,17 +3,11 @@ set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_C_COMPILER_WORKS 1)
 set(CMAKE_CXX_COMPILER_WORKS 1)
 
-set(PIO_PACKAGES .pio/libdeps/d1_mini)
-
 project("killifish-iot" C CXX)
 
 include(CMakeListsPrivate.txt)
 
-include_directories(${PIO_PACKAGES}/PubSubClient/src)
-include_directories(".pio/libdeps/d1_mini/Cheap Stepper/src")
-include_directories(${PIO_PACKAGES}/ArduinoJson/src)
-include_directories(${PIO_PACKAGES}/TaskScheduler/src)
-include_directories(${PIO_PACKAGES}/NTPClient)
+include_directories(.pio/libdeps/d1_mini/NTPClient)
 
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/CMakeListsUser.txt)
     include(CMakeListsUser.txt)

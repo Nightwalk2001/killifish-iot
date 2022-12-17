@@ -8,7 +8,7 @@
 #include <NTPClient.h>
 #include <ArduinoJson.h>
 #include <CheapStepper.h>
-#include <TaskScheduler.h>
+#include <TaskSchedulerDeclarations.h>
 
 #define DEVICE_ID "01A03"
 #define BTN D5
@@ -31,8 +31,11 @@ extern const char *SUB_TOPIC;
 extern const char *PUB_TOPIC;
 extern const char *ERROR_TOPIC;
 
-extern const unsigned long PRESS_DURATION;
-extern const unsigned long LONG_PRESS_DURATION;
+extern const uint8 Threshold;
+extern const char *ConfigFile;
+
+extern const uint16 PRESS_DURATION;
+extern const uint16 LONG_PRESS_DURATION;
 
 extern JsonArray feedings;
 
@@ -45,7 +48,11 @@ extern WiFiClient wifi;
 extern WiFiUDP udp;
 extern PubSubClient pubsub;
 extern NTPClient timeClient;
-extern Scheduler scheduler;
+extern Scheduler runner;
 extern CheapStepper stepper;
+
+extern bool WiFiAvailable;
+extern bool MqttAvailable;
+extern bool FsAvailable;
 
 #endif

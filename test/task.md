@@ -1,8 +1,7 @@
+```c++
 #ifndef TASK_HPP
 #define TASK_HPP
 
-//#include <Esp8266WiFi.h>
-#include <TaskSchedulerDeclarations.h>
 #include <config.h>
 #include <fs.hpp>
 
@@ -18,24 +17,12 @@ void listen() {
     pubsub.loop();
 }
 
-void cbk() {
-    digitalWrite(INFRARED_LED,LOW);
-
-    DynamicJsonDocument doc(1024);
-    doc["id"] = DEVICE_ID;
-//    doc["type"] = "manual";
-    doc["amount"] = amount;
-    String out;
-    serializeJson(doc, out);
-    pubsub.publish(PUB_TOPIC, out.c_str());
-
-    amount = 0;
-}
+void cbk();
 
 void reconnect() {
     if (WiFi.status() !=WL_CONNECTED) {
         WiFiX::connect();
-        if (WiFiAvailable) Mqtt::connect();
+        if (WiFiX::available) Mqtt::connect();
     }
 }
 
@@ -44,16 +31,16 @@ void stepperLoop() {
 }
 
 // 按钮loop
-Task listenBtn(0, TASK_FOREVER, &btnHandler, &runner, true);
+Task listenBtn(0, TASK_FOREVER, &btnHandler, &scheduler, true);
 // 电机loop 如果电机不转动，把下面那行解除注释
-Task stepperTask(0, TASK_FOREVER, &stepperLoop, &runner, true);
+Task stepperTask(0, TASK_FOREVER, &stepperLoop, &scheduler, true);
 
-Task pubsubTask(0, TASK_FOREVER, &listen, &runner, true);
+Task pubsubTask(0, TASK_FOREVER, &listen, &scheduler, true);
 
 //Task l(0, TASK_FOREVER, &cbk,&ts, false);
-Task i(1, TASK_FOREVER, &inspect,&runner ,false);
+Task i(1, TASK_FOREVER, &inspect,&scheduler ,false);
 
-Task reconnectTask(12000, TASK_FOREVER, &inspect,&runner, true);
+Task reconnectTask(12000, TASK_FOREVER, &inspect,&scheduler, true);
 
 Task deviceError();
 
@@ -91,3 +78,5 @@ void btnHandler() {
 }
 
 #endif
+
+```

@@ -7,30 +7,24 @@
 #include <mqtt.hpp>
 
 void setupFs() {
-    bool opened = LittleFS.begin();
-    if (!opened) Serial.println("An Error has occurred while mounting LittleFS");
+    if (LittleFS.begin()) {
+        FsAvailable = true;
+        File file = LittleFS.open(ConfigFile, "r");
 
-    File file = LittleFS.open("./conf.json", "r");
+        DynamicJsonDocument config(1024);
 
-    DynamicJsonDocument config(1024);
+        if (!file || file.isDirectory()) return;
+        else deserializeJson(config, file);
 
-    if (!file || file.isDirectory()) return;
-    else deserializeJson(config, file);
-    file.close();
-//
-//    String out;
-//    serializeJson(config, out);
-//    pubsub.publish(PUB_TOPIC, out.c_str());
+        feedings = config.as<JsonArray>();
 
-}
-
-void save() {
-
+        file.close();
+    }
 }
 
 void reset() {
-    LittleFS.remove("./conf.json");
-    if (Mqtt::available) {
+    LittleFS.remove(ConfigFile);
+    if (MqttAvailable) {
         pubsub.publish(PUB_TOPIC, "恢复出厂设置");
     }
 }
