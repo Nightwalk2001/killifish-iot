@@ -16,16 +16,12 @@ void feed(int c);
 
 void inspect();
 
-void blink() {
-
-}
-
 void listen() {
     pubsub.loop();
 }
 
 void cbk() {
-    digitalWrite(INFRARED_LED,LOW);
+    digitalWrite(INFRARED_LED, LOW);
 
     if (MqttAvailable) {
         DynamicJsonDocument doc(1024);
@@ -41,7 +37,7 @@ void cbk() {
 }
 
 void reconnect() {
-    if (WiFi.status() !=WL_CONNECTED) {
+    if (WiFi.status() != WL_CONNECTED) {
         WiFiAvailable = false;
         WiFiX::connect();
         if (WiFiAvailable) Mqtt::connect();
@@ -52,6 +48,15 @@ void stepperLoop() {
     stepper.run();
 }
 
+void led() {
+    if (WiFiAvailable)
+        if (MqttAvailable)
+            if (FsAvailable) analogWrite(POWER_LED, 255);
+            else analogWrite(POWER_LED, 64);
+        else analogWrite(POWER_LED, 16);
+    else analogWrite(POWER_LED, 0);
+}
+
 // 按钮loop
 Task listenBtn(0, TASK_FOREVER, &btnHandler, &runner, true);
 // 电机loop 如果电机不转动，把下面那行解除注释
@@ -60,11 +65,11 @@ Task stepperTask(0, TASK_FOREVER, &stepperLoop, &runner, true);
 Task pubsubTask(0, TASK_FOREVER, &listen, &runner, true);
 
 //Task l(0, TASK_FOREVER, &cbk,&ts, false);
-Task i(1, TASK_FOREVER, &inspect,&runner ,false);
+Task i(1, TASK_FOREVER, &inspect, &runner, false);
 
-Task reconnectTask(12000, TASK_FOREVER, &inspect,&runner, true);
+Task reconnectTask(12000, TASK_FOREVER, &reconnect, &runner, true);
 
-//Task deviceError();
+Task ledTask(1000, TASK_FOREVER, &led, &runner, true);
 
 void feed(int c) {
     i.enable();
@@ -73,17 +78,17 @@ void feed(int c) {
 void inspect() {
     unsigned long iter = i.getRunCounter();
 
-    if (iter ==0 || iter % 2500 ==1) {
+    if (iter == 0 || iter % 2500 == 1) {
         digitalWrite(INFRARED_LED, HIGH);
         stepper.moveCW(2048);
     }
-    if (iter > 0 && iter % 2500 ==0) {
+    if (iter > 0 && iter % 2500 == 0) {
         cbk();
         i.disable();
     }
     int infrared_value = digitalRead(INFRARED);
 //    lightArray.add(lightIntensity);
-    if (infrared_value ==1) amount++;
+    if (infrared_value == 1) amount++;
 }
 
 void btnHandler() {
