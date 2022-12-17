@@ -67,7 +67,7 @@ Task pubsubTask(0, TASK_FOREVER, &listen, &runner, true);
 //Task l(0, TASK_FOREVER, &cbk,&ts, false);
 Task i(1, TASK_FOREVER, &inspect, &runner, false);
 
-Task reconnectTask(12000, TASK_FOREVER, &reconnect, &runner, true);
+//Task reconnectTask(12000, TASK_FOREVER, &reconnect, &runner, true);
 
 Task ledTask(1000, TASK_FOREVER, &led, &runner, true);
 
