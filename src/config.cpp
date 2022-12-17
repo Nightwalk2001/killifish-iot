@@ -1,6 +1,5 @@
 #include <ArduinoJson.h>
 #include <config.h>
-#include <TaskScheduler.h>
 
 const char *SSID = "mqtt";
 const char *PASSPHRASE = "12345678";
@@ -30,7 +29,6 @@ WiFiClient wifi;
 WiFiUDP udp;
 PubSubClient pubsub(wifi);
 NTPClient timeClient(udp, "ntp.aliyun.com");
-Scheduler runner;
 CheapStepper stepper(IN1, IN2, IN3, IN4);
 
 bool WiFiAvailable = false;

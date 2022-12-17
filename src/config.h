@@ -48,7 +48,6 @@ extern WiFiClient wifi;
 extern WiFiUDP udp;
 extern PubSubClient pubsub;
 extern NTPClient timeClient;
-extern Scheduler runner;
 extern CheapStepper stepper;
 
 extern bool WiFiAvailable;
