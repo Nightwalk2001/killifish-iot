@@ -27,13 +27,15 @@ void listen() {
 void cbk() {
     digitalWrite(INFRARED_LED,LOW);
 
-    DynamicJsonDocument doc(1024);
-    doc["id"] = DEVICE_ID;
+    if (MqttAvailable) {
+        DynamicJsonDocument doc(1024);
+        doc["id"] = DEVICE_ID;
 //    doc["type"] = "manual";
-    doc["amount"] = amount;
-    String out;
-    serializeJson(doc, out);
-    pubsub.publish(PUB_TOPIC, out.c_str());
+        doc["amount"] = amount;
+        String out;
+        serializeJson(doc, out);
+        pubsub.publish(PUB_TOPIC, out.c_str());
+    }
 
     amount = 0;
 }
@@ -102,10 +104,12 @@ void setup() {
     Serial.begin(9600);
 
     setupPinMode();
-    WiFiX::connect();
-    Mqtt::connect();
+//    WiFiX::connect();
+//    Mqtt::connect();
 //    timeClient.begin();
     setupFs();
+
+    stepper.setRpm(12);
 }
 
 void loop() {
