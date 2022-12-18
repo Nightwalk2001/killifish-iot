@@ -36,27 +36,27 @@ void cbk() {
     amount = 0;
 }
 
-void reconnect() {
-    if (WiFi.status() != WL_CONNECTED) {
-        WiFiAvailable = false;
-        MqttAvailable = false;
-        WiFiX::connect();
-        if (WiFiAvailable) Mqtt::connect();
-    }
-}
+//void reconnect() {
+//    if (WiFi.status() != WL_CONNECTED) {
+//        WiFiAvailable = false;
+//        MqttAvailable = false;
+//        WiFiX::connect();
+//        if (WiFiAvailable) Mqtt::connect();
+//    }
+//}
 
 void stepperLoop() {
     stepper.run();
 }
 
-void led() {
-    if (WiFiAvailable)
-        if (MqttAvailable)
-            if (FsAvailable) analogWrite(POWER_LED, 255);
-            else analogWrite(POWER_LED, 64);
-        else analogWrite(POWER_LED, 16);
-    else analogWrite(POWER_LED, 0);
-}
+//void led() {
+//    if (WiFiAvailable)
+//        if (MqttAvailable)
+//            if (FsAvailable) analogWrite(POWER_LED, 255);
+//            else analogWrite(POWER_LED, 64);
+//        else analogWrite(POWER_LED, 16);
+//    else analogWrite(POWER_LED, 0);
+//}
 
 // 按钮loop
 Task listenBtn(0, TASK_FOREVER, &btnHandler, &runner, true);
@@ -68,9 +68,9 @@ Task pubsubTask(0, TASK_FOREVER, &listen, &runner, true);
 //Task l(0, TASK_FOREVER, &cbk,&ts, false);
 Task i(1, TASK_FOREVER, &inspect, &runner, false);
 
-Task reconnectTask(12000, TASK_FOREVER, &reconnect, &runner, true);
+//Task reconnectTask(12000, TASK_FOREVER, &reconnect, &runner, true);
 
-Task ledTask(1000, TASK_FOREVER, &led, &runner, true);
+//Task ledTask(1000, TASK_FOREVER, &led, &runner, true);
 
 void feed(int c) {
     i.enable();
@@ -104,7 +104,6 @@ void btnHandler() {
         prevState = currentState;
     }
 }
-
 
 void setup() {
     Serial.begin(9600);
