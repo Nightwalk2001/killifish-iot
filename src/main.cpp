@@ -107,6 +107,7 @@ void button() {
 
 void ledControl() {
     if (WiFiAvailable) {
+        analogWrite(POWER_LED,10);
         if (tWifiLed.isEnabled()) tWifiLed.disable();
         if (MqttAvailable) {
             if (tMqttLed.isEnabled()) tMqttLed.disable();
@@ -124,7 +125,7 @@ void setup() {
     Serial.begin(9600);
 //
 //    setupPinMode();
-////    WiFiX::connect();
+    WiFiX::connect();
 ////    Mqtt::connect();
 ////    timeClient.begin();
 //    setupFs();
