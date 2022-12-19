@@ -25,7 +25,7 @@ void setupFs() {
 void reset() {
     LittleFS.remove(ConfigFile);
     if (MqttAvailable) {
-        pubsub.publish(PUB_TOPIC, "恢复出厂设置");
+        pubsub.publish(AUTO_TOPIC, "恢复出厂设置");
     }
 }
 

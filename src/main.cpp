@@ -52,10 +52,10 @@ void stepperLoop() {
 
 void led() {
     if (POWER_LED_ON) {
-        digitalWrite(POWER_LED, LOW);
+        analogWrite(POWER_LED, 0);
         POWER_LED_ON = false;
     } else {
-        digitalWrite(POWER_LED, HIGH);
+        analogWrite(POWER_LED, 50);
         POWER_LED_ON = true;
     }
 }
@@ -129,10 +129,10 @@ void setup() {
 ////    timeClient.begin();
 //    setupFs();
 //
-//    stepper.setRpm(12);
+    stepper.setRpm(12);
 }
 
 void loop() {
-//    runner.execute();
+    runner.execute();
 }
 
