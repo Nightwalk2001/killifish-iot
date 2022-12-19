@@ -107,7 +107,7 @@ void button() {
 
 void ledControl() {
     if (WiFiAvailable) {
-        analogWrite(POWER_LED,10);
+        analogWrite(POWER_LED, 10);
         if (tWifiLed.isEnabled()) tWifiLed.disable();
         if (MqttAvailable) {
             if (tMqttLed.isEnabled()) tMqttLed.disable();
@@ -115,6 +115,7 @@ void ledControl() {
             if (!tMqttLed.isEnabled()) tMqttLed.enable();
         }
     } else {
+        analogWrite(POWER_LED, 0);
         if (!tWifiLed.isEnabled()) tWifiLed.enable();
         if (tMqttLed.isEnabled()) tMqttLed.disable();
     }
