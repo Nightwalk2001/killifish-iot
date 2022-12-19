@@ -21,7 +21,7 @@ void setupWifi() {
     Serial.println("Connected to the WiFi network");
 }
 
-void btnHandler();
+void button();
 
 void stepperLoop();
 
@@ -36,7 +36,7 @@ void listen() {
 }
 
 // 按钮loop
-Task listenBtn(0, TASK_FOREVER, &btnHandler, &ts, true);
+Task listenBtn(0, TASK_FOREVER, &button, &ts, true);
 // 电机loop 如果电机不转动，把下面那行解除注释
 Task stepperTask(0, TASK_FOREVER, &stepperLoop, &ts, true);
 
@@ -53,7 +53,7 @@ void reset() {
 }
 
 // 处理按钮事件
-void btnHandler() {
+void button() {
     currentState = digitalRead(BTN);
     if (currentState != prevState) {
         if (currentState == LOW) counter = millis();

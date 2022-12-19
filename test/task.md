@@ -5,7 +5,7 @@
 #include <config.h>
 #include <fs.hpp>
 
-void btnHandler();
+void button();
 
 void stepperLoop();
 
@@ -31,7 +31,7 @@ void stepperLoop() {
 }
 
 // 按钮loop
-Task listenBtn(0, TASK_FOREVER, &btnHandler, &scheduler, true);
+Task listenBtn(0, TASK_FOREVER, &button, &scheduler, true);
 // 电机loop 如果电机不转动，把下面那行解除注释
 Task stepperTask(0, TASK_FOREVER, &stepperLoop, &scheduler, true);
 
@@ -64,7 +64,7 @@ void inspect() {
     if (infrared_value ==1) amount++;
 }
 
-void btnHandler() {
+void button() {
     currentState = digitalRead(BTN);
     if (currentState != prevState) {
         if (currentState == LOW) counter = millis();

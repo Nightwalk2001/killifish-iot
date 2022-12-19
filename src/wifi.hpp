@@ -17,12 +17,6 @@ public:
         }
         if (count < Threshold) WiFiAvailable = true;
     };
-
-    static void blink(uint8_t pin) {
-        digitalWrite(pin, HIGH);
-        delay(1000);
-        digitalWrite(pin, LOW);
-    };
 };
 
 #endif

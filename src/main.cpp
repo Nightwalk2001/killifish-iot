@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <TaskScheduler.h>
 #include <config.h>
+#include <variable.h>
 #include <hal.hpp>
 #include <wifi.hpp>
 #include <mqtt.hpp>
@@ -8,115 +9,130 @@
 
 Scheduler runner;
 
-void btnHandler();
+void button();
 
 void stepperLoop();
 
-void feed(int c);
-
 void inspect();
 
-void listen() {
+void ledControl();
+
+void pubsubLoop() {
     pubsub.loop();
 }
 
-void cbk() {
+void report() {
     digitalWrite(INFRARED_LED, LOW);
 
     if (MqttAvailable) {
         DynamicJsonDocument doc(1024);
         doc["id"] = DEVICE_ID;
-//    doc["type"] = "manual";
-        doc["amount"] = amount;
+        doc["trigger"] = "manual";
+        doc["amount"] = detected;
         String out;
         serializeJson(doc, out);
-        pubsub.publish(PUB_TOPIC, out.c_str());
+        pubsub.publish(RESULT_TOPIC, out.c_str());
     }
 
-    amount = 0;
+    detected = 0;
 }
 
-//void reconnect() {
-//    if (WiFi.status() != WL_CONNECTED) {
-//        WiFiAvailable = false;
-//        MqttAvailable = false;
-//        WiFiX::connect();
-//        if (WiFiAvailable) Mqtt::connect();
-//    }
-//}
+void reconnect() {
+    if (WiFi.status() != WL_CONNECTED) {
+        WiFiAvailable = false;
+        MqttAvailable = false;
+        WiFiX::connect();
+        if (WiFiAvailable) Mqtt::connect();
+    }
+}
 
 void stepperLoop() {
     stepper.run();
 }
 
-//void led() {
-//    if (WiFiAvailable)
-//        if (MqttAvailable)
-//            if (FsAvailable) analogWrite(POWER_LED, 255);
-//            else analogWrite(POWER_LED, 64);
-//        else analogWrite(POWER_LED, 16);
-//    else analogWrite(POWER_LED, 0);
-//}
-
-// 按钮loop
-Task listenBtn(0, TASK_FOREVER, &btnHandler, &runner, true);
-// 电机loop 如果电机不转动，把下面那行解除注释
-Task stepperTask(0, TASK_FOREVER, &stepperLoop, &runner, true);
-
-Task pubsubTask(0, TASK_FOREVER, &listen, &runner, true);
-
-//Task l(0, TASK_FOREVER, &cbk,&ts, false);
-Task i(1, TASK_FOREVER, &inspect, &runner, false);
-
-//Task reconnectTask(12000, TASK_FOREVER, &reconnect, &runner, true);
-
-//Task ledTask(1000, TASK_FOREVER, &led, &runner, true);
-
-void feed(int c) {
-    i.enable();
+void led() {
+    if (POWER_LED_ON) {
+        digitalWrite(POWER_LED, LOW);
+        POWER_LED_ON = false;
+    } else {
+        digitalWrite(POWER_LED, HIGH);
+        POWER_LED_ON = true;
+    }
 }
 
+Task tButton(0, TASK_FOREVER, &button, &runner, true);
+
+Task tStepper(0, TASK_FOREVER, &stepperLoop, &runner, true);
+
+Task tPubSub(0, TASK_FOREVER, &pubsubLoop, &runner, true);
+
+Task tFeed(1, TASK_FOREVER, &inspect, &runner, false);
+
+Task tLedControl(60000, TASK_FOREVER, &ledControl, &runner, true);
+
+Task tWifiLed(200, TASK_FOREVER, &led, &runner, true);
+
+Task tMqttLed(1000, TASK_FOREVER, &led, &runner, true);
+
 void inspect() {
-    unsigned long iter = i.getRunCounter();
+    unsigned long iter = tFeed.getRunCounter();
 
     if (iter == 0 || iter % 2500 == 1) {
         digitalWrite(INFRARED_LED, HIGH);
-        stepper.moveCW(2048);
+        stepper.moveCW(2048 * turns);
     }
     if (iter > 0 && iter % 2500 == 0) {
-        cbk();
-        i.disable();
+        report();
+        tFeed.disable();
     }
     int infrared_value = digitalRead(INFRARED);
-//    lightArray.add(lightIntensity);
-    if (infrared_value == 1) amount++;
+    if (infrared_value == 1) detected++;
 }
 
-void btnHandler() {
+void button() {
     currentState = digitalRead(BTN);
     if (currentState != prevState) {
-        if (currentState == LOW) counter = millis();
+        if (currentState == LOW) btnCounter = millis();
         else {
-            unsigned long diff = millis() - counter;
-            if (diff < LONG_PRESS_DURATION && diff >= PRESS_DURATION) feed(1);  // 单击按钮
-            else if (diff >= LONG_PRESS_DURATION) reset(); // 长按按钮
+            unsigned long diff = millis() - btnCounter;
+            if (diff < LONG_PRESS_DURATION && diff >= PRESS_DURATION) {
+                turns = 1;
+                tFeed.enable();
+            };  // 单击按钮
+            if (diff >= LONG_PRESS_DURATION) reset(); // 长按按钮
         }
         prevState = currentState;
     }
 }
 
+void ledControl() {
+    if (WiFiAvailable) {
+        if (tWifiLed.isEnabled()) tWifiLed.disable();
+        if (MqttAvailable) {
+            if (tMqttLed.isEnabled()) tMqttLed.disable();
+        } else {
+            if (!tMqttLed.isEnabled()) tMqttLed.enable();
+        }
+    } else {
+        if (!tWifiLed.isEnabled()) tWifiLed.enable();
+        if (tMqttLed.isEnabled()) tMqttLed.disable();
+    }
+}
+
+
 void setup() {
     Serial.begin(9600);
-
-    setupPinMode();
-//    WiFiX::connect();
-//    Mqtt::connect();
-//    timeClient.begin();
-    setupFs();
-
-    stepper.setRpm(12);
+//
+//    setupPinMode();
+////    WiFiX::connect();
+////    Mqtt::connect();
+////    timeClient.begin();
+//    setupFs();
+//
+//    stepper.setRpm(12);
 }
 
 void loop() {
-    runner.execute();
+//    runner.execute();
 }
+

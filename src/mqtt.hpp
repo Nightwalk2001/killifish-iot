@@ -7,6 +7,7 @@
 #include <WiFiUdp.h>
 #include <wifi.hpp>
 #include <config.h>
+#include <variable.h>
 
 void saveConfig(byte *raw) {
     DynamicJsonDocument doc(1024);
@@ -27,6 +28,8 @@ public:
     Mqtt() = default;
 
     static void connect() {
+//        uint8 suffix = ((DEVICE_ID[0] - 48) * 10 + (DEVICE_ID[1] - 48)) % 4;
+//        uint16 port = 1883 + suffix;
         uint8 count = 0;
 
         pubsub.setServer(BROKER, PORT);
@@ -38,7 +41,8 @@ public:
         if (count < Threshold) {
             MqttAvailable = true;
             pubsub.setCallback(callback);
-            pubsub.subscribe(SUB_TOPIC);
+            pubsub.subscribe(AUTO_TOPIC);
+            pubsub.subscribe(MANUAL_TOPIC);
         }
     };
 };
