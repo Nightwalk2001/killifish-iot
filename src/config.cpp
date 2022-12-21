@@ -14,7 +14,7 @@ const char *MANUAL_TOPIC = "manual-feeding";
 const char *RESULT_TOPIC = "feeding-res";
 const char *ERROR_TOPIC = "error-occur";
 
-const uint8 Threshold = 60;
+const uint8 Threshold = 6;
 const char *ConfigFile = "./conf.json";
 
 const uint16 PRESS_DURATION = 100;

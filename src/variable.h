@@ -15,10 +15,6 @@ extern PubSubClient pubsub;
 extern NTPClient timeClient;
 extern CheapStepper stepper;
 
-extern bool WiFiAvailable;
-extern bool MqttAvailable;
-extern bool FsAvailable;
-
 extern JsonArray feedings;
 
 extern unsigned long btnCounter;
@@ -29,5 +25,7 @@ extern bool POWER_LED_ON;
 
 extern uint8 turns;
 extern uint detected;
+
+extern Task tFeed;
 
 #endif

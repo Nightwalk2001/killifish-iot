@@ -7,10 +7,6 @@ PubSubClient pubsub(wifi);
 NTPClient timeClient(udp, "ntp.aliyun.com");
 CheapStepper stepper(IN1, IN2, IN3, IN4);
 
-bool WiFiAvailable = false;
-bool MqttAvailable = false;
-bool FsAvailable = false;
-
 JsonArray feedings;
 
 unsigned long btnCounter = 0;

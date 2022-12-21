@@ -19,8 +19,18 @@ void saveConfig(byte *raw) {
     f.close();
 }
 
-void callback(char *topic, byte *payload, unsigned int length) {
-    saveConfig(payload);
+void callback(const char *topic, byte *payload, unsigned int length) {
+    if (topic == MANUAL_TOPIC) {
+        DynamicJsonDocument doc(1024);
+
+        deserializeJson(doc,payload);
+        if (doc["device"] == DEVICE_ID) {
+            turns = doc["count"];
+            tFeed.enable();
+        }
+    }
+
+    if (topic == AUTO_TOPIC)  saveConfig(payload);
 }
 
 class Mqtt {
@@ -39,7 +49,6 @@ public:
             if (pubsub.connect(DEVICE_ID, USER, PASSWORD) || ++count > Threshold) break;
         }
         if (count < Threshold) {
-            MqttAvailable = true;
             pubsub.setCallback(callback);
             pubsub.subscribe(AUTO_TOPIC);
             pubsub.subscribe(MANUAL_TOPIC);

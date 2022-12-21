@@ -8,7 +8,6 @@
 
 void setupFs() {
     if (LittleFS.begin()) {
-        FsAvailable = true;
         File file = LittleFS.open(ConfigFile, "r");
 
         DynamicJsonDocument config(1024);
@@ -24,7 +23,7 @@ void setupFs() {
 
 void reset() {
     LittleFS.remove(ConfigFile);
-    if (MqttAvailable) {
+    if (pubsub.connected()) {
         pubsub.publish(AUTO_TOPIC, "恢复出厂设置");
     }
 }
