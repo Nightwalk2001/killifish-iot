@@ -6,7 +6,7 @@
 #define BTN D5
 #define INFRARED A0
 #define INFRARED_LED D6
-#define POWER_LED D4
+#define PILOT_LAMP D4
 #define IN1 D7
 #define IN2 D2
 #define IN3 D8

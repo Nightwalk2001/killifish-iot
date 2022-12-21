@@ -5,7 +5,7 @@
 
 void setupPinMode() {
     pinMode(BTN, INPUT);
-    pinMode(POWER_LED, OUTPUT);
+    pinMode(PILOT_LAMP, OUTPUT);
 }
 
 void blinkAlarm() {

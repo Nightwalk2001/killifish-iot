@@ -39,8 +39,6 @@ void report() {
 
 void reconnect() {
     if (WiFi.status() != WL_CONNECTED) {
-//        WiFiAvailable = false;
-//        MqttAvailable = false;
         WiFiX::connect();
         if (WiFi.status() == WL_CONNECTED) Mqtt::connect();
     }
@@ -52,64 +50,64 @@ void stepperLoop() {
 
 void led() {
     if (POWER_LED_ON) {
-        digitalWrite(POWER_LED, HIGH);
+        digitalWrite(PILOT_LAMP, HIGH);
         POWER_LED_ON = false;
     } else {
-        digitalWrite(POWER_LED, LOW);
+        digitalWrite(PILOT_LAMP, LOW);
         POWER_LED_ON = true;
     }
 }
 
-//Task tButton(0, TASK_FOREVER, &button, &runner, true);
-//
-//Task tStepper(0, TASK_FOREVER, &stepperLoop, &runner, true);
+Task tButton(0, TASK_FOREVER, &button, &runner, true);
 
-//Task tPubSub(0, TASK_FOREVER, &pubsubLoop, &runner, true);
+Task tStepper(0, TASK_FOREVER, &stepperLoop, &runner, true);
+
+Task tPubSub(0, TASK_FOREVER, &pubsubLoop, &runner, true);
 
 Task tFeed(1, TASK_FOREVER, &inspect, &runner, false);
 
 Task tLed(200, TASK_FOREVER, &led, &runner, false);
 //
-//Task tMqttLed(1000, TASK_FOREVER, &led, &runner, false);
+Task tMqttLed(1000, TASK_FOREVER, &led, &runner, false);
 
 Task tReconnect(1000, TASK_FOREVER, &reconnect, &runner, true);
 
 Task tLedControl(10000, TASK_FOREVER, &ledControl, &runner, true);
 
-//void inspect() {
-//    unsigned long iter = tFeed.getRunCounter();
-//
-//    if (iter == 0 || iter % 2500 == 1) {
-//        digitalWrite(INFRARED_LED, HIGH);
-//        stepper.moveCW(2048 * turns);
-//    }
-//    if (iter > 0 && iter % 2500 == 0) {
-//        report();
-//        tFeed.disable();
-//    }
-//    int infrared_value = digitalRead(INFRARED);
-//    if (infrared_value == 1) detected++;
-//}
-//
-//void button() {
-//    currentState = digitalRead(BTN);
-//    if (currentState != prevState) {
-//        if (currentState == LOW) btnCounter = millis();
-//        else {
-//            unsigned long diff = millis() - btnCounter;
-//            if (diff < LONG_PRESS_DURATION && diff >= PRESS_DURATION) {
-//                turns = 1;
-//                tFeed.enable();
-//            };  // 单击按钮
-//            if (diff >= LONG_PRESS_DURATION) reset(); // 长按按钮
-//        }
-//        prevState = currentState;
-//    }
-//}
+void inspect() {
+    unsigned long iter = tFeed.getRunCounter();
+
+    if (iter == 0 || iter % 2500 == 1) {
+        digitalWrite(INFRARED_LED, HIGH);
+        stepper.moveCW(2048 * turns);
+    }
+    if (iter > 0 && iter % 2500 == 0) {
+        report();
+        tFeed.disable();
+    }
+    int infrared_value = digitalRead(INFRARED);
+    if (infrared_value == 1) detected++;
+}
+
+void button() {
+    currentState = digitalRead(BTN);
+    if (currentState != prevState) {
+        if (currentState == LOW) btnCounter = millis();
+        else {
+            unsigned long diff = millis() - btnCounter;
+            if (diff < LONG_PRESS_DURATION && diff >= PRESS_DURATION) {
+                turns = 1;
+                tFeed.enable();
+            };  // 单击按钮
+            if (diff >= LONG_PRESS_DURATION) reset(); // 长按按钮
+        }
+        prevState = currentState;
+    }
+}
 
 void ledControl() {
     if (WiFi.status() == WL_CONNECTED) {
-        digitalWrite(LED_BUILTIN, LOW);
+        digitalWrite(PILOT_LAMP, LOW);
         if (pubsub.connected()) {
             if (tLed.isEnabled()) tLed.disable();
         } else {
@@ -117,7 +115,7 @@ void ledControl() {
             tLed.setInterval(1000);
         }
     } else {
-        digitalWrite(LED_BUILTIN, HIGH);
+        digitalWrite(PILOT_LAMP, HIGH);
         if (!tLed.isEnabled()) {
             tLed.enable();
             tLed.setInterval(200);
