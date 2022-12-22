@@ -8,7 +8,4 @@ void setupPinMode() {
     pinMode(PILOT_LAMP, OUTPUT);
 }
 
-void blinkAlarm() {
-}
-
 #endif

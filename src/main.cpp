@@ -1,3 +1,6 @@
+#define _TASK_SLEEP_ON_IDLE_RUN
+#define _TASK_PRIORITY
+
 #include <Arduino.h>
 #include <TaskScheduler.h>
 #include <config.h>
@@ -7,7 +10,7 @@
 #include <mqtt.hpp>
 #include <fs.hpp>
 
-Scheduler runner;
+Scheduler runner,hRunner;
 
 void button();
 
@@ -58,7 +61,7 @@ void led() {
     }
 }
 
-Task tButton(0, TASK_FOREVER, &button, &runner, true);
+Task tButton(0, TASK_FOREVER, &button, &hRunner, true);
 
 Task tStepper(0, TASK_FOREVER, &stepperLoop, &runner, true);
 
@@ -67,10 +70,8 @@ Task tPubSub(0, TASK_FOREVER, &pubsubLoop, &runner, true);
 Task tFeed(1, TASK_FOREVER, &inspect, &runner, false);
 
 Task tLed(200, TASK_FOREVER, &led, &runner, false);
-//
-Task tMqttLed(1000, TASK_FOREVER, &led, &runner, false);
 
-Task tReconnect(1000, TASK_FOREVER, &reconnect, &runner, true);
+Task tReconnect(1000 * 120, TASK_FOREVER, &reconnect, &runner, true);
 
 Task tLedControl(10000, TASK_FOREVER, &ledControl, &runner, true);
 
@@ -98,8 +99,8 @@ void button() {
             if (diff < LONG_PRESS_DURATION && diff >= PRESS_DURATION) {
                 turns = 1;
                 tFeed.enable();
-            };  // 单击按钮
-            if (diff >= LONG_PRESS_DURATION) reset(); // 长按按钮
+            };
+            if (diff >= LONG_PRESS_DURATION) reset();
         }
         prevState = currentState;
     }
@@ -133,7 +134,9 @@ void setup() {
 ////    timeClient.begin();
 //    setupFs();
 //
-//    stepper.setRpm(12);
+    stepper.setRpm(12);
+    runner.setHighPriorityScheduler(&hRunner);
+    runner.enableAll(true);
 }
 
 void loop() {
