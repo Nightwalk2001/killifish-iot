@@ -4,7 +4,7 @@
 #include <config.h>
 
 void setupPinMode() {
-    pinMode(BTN, INPUT);
+    pinMode(BTN, INPUT_PULLUP);
     pinMode(INFRARED, INPUT);
     pinMode(INFRARED_LED,OUTPUT);
     pinMode(PILOT_LAMP, OUTPUT);

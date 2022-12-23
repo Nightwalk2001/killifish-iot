@@ -73,7 +73,7 @@ Task tLed(350, TASK_FOREVER, &led, &runner, false);
 
 Task tReconnect(1000 * 120, TASK_FOREVER, &reconnect, &runner, true);
 
-Task tLedControl(10000, TASK_FOREVER, &ledControl, &runner, true);
+Task tLedControl(1000*10, TASK_FOREVER, &ledControl, &runner, true);
 
 void inspect() {
     unsigned long iter = tFeed.getRunCounter();
@@ -130,8 +130,8 @@ void setup() {
 
     setupPinMode();
     WiFiX::connect();
-//    Mqtt::connect();
-////    timeClient.begin();
+    Mqtt::connect();
+//timeClient.begin();
 //    setupFs();
 //
     stepper.setRpm(12);
