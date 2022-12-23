@@ -10,7 +10,7 @@
 #include <mqtt.hpp>
 #include <fs.hpp>
 
-Scheduler runner,hRunner;
+Scheduler runner, hRunner;
 
 void button();
 
@@ -44,6 +44,8 @@ void reconnect() {
     if (WiFi.status() != WL_CONNECTED) {
         WiFiX::connect();
         if (WiFi.status() == WL_CONNECTED) Mqtt::connect();
+    } else {
+        if (!pubsub.connected()) Mqtt::connect();
     }
 }
 
@@ -73,7 +75,7 @@ Task tLed(350, TASK_FOREVER, &led, &runner, false);
 
 Task tReconnect(1000 * 120, TASK_FOREVER, &reconnect, &runner, true);
 
-Task tLedControl(1000*10, TASK_FOREVER, &ledControl, &runner, true);
+Task tLedControl(1000 * 10, TASK_FOREVER, &ledControl, &runner, true);
 
 void inspect() {
     unsigned long iter = tFeed.getRunCounter();
