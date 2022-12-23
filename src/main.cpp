@@ -53,10 +53,10 @@ void stepperLoop() {
 
 void led() {
     if (POWER_LED_ON) {
-        digitalWrite(PILOT_LAMP, HIGH);
+        digitalWrite(PILOT_LAMP, LOW);
         POWER_LED_ON = false;
     } else {
-        digitalWrite(PILOT_LAMP, LOW);
+        digitalWrite(PILOT_LAMP, HIGH);
         POWER_LED_ON = true;
     }
 }
@@ -69,7 +69,7 @@ Task tPubSub(0, TASK_FOREVER, &pubsubLoop, &runner, true);
 
 Task tFeed(1, TASK_FOREVER, &inspect, &runner, false);
 
-Task tLed(200, TASK_FOREVER, &led, &runner, false);
+Task tLed(350, TASK_FOREVER, &led, &runner, false);
 
 Task tReconnect(1000 * 120, TASK_FOREVER, &reconnect, &runner, true);
 
@@ -108,18 +108,18 @@ void button() {
 
 void ledControl() {
     if (WiFi.status() == WL_CONNECTED) {
-        digitalWrite(PILOT_LAMP, LOW);
+        digitalWrite(PILOT_LAMP, HIGH);
         if (pubsub.connected()) {
             if (tLed.isEnabled()) tLed.disable();
         } else {
-            if (!tLed.isEnabled()) tLed.enable();
             tLed.setInterval(1000);
+            if (!tLed.isEnabled()) tLed.enable();
         }
     } else {
-        digitalWrite(PILOT_LAMP, HIGH);
+        digitalWrite(PILOT_LAMP, LOW);
         if (!tLed.isEnabled()) {
+            tLed.setInterval(350);
             tLed.enable();
-            tLed.setInterval(200);
         }
     }
 }
