@@ -44,14 +44,12 @@ public:
 
         pubsub.setServer(BROKER, PORT);
 
-        Serial.println("连接mqtt");
         while (!pubsub.connected()) {
-            Serial.print(".");
             delay(1000);
             if (pubsub.connect(DEVICE_ID, USER, PASSWORD) || ++count > Threshold) break;
         }
         if (count < Threshold) {
-            Serial.println("连接上了mqtt");
+            tPubsub.enableIfNot();
             pubsub.setCallback(callback);
             pubsub.subscribe(AUTO_TOPIC);
             pubsub.subscribe(MANUAL_TOPIC);

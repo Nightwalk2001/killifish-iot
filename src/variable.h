@@ -27,5 +27,6 @@ extern uint8 turns;
 extern uint detected;
 
 extern Task tFeed;
+extern Task tPubsub;
 
 #endif

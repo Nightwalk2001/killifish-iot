@@ -67,7 +67,7 @@ Task tButton(0, TASK_FOREVER, &button, &hRunner, true);
 
 Task tStepper(0, TASK_FOREVER, &stepperLoop, &runner, true);
 
-Task tPubSub(0, TASK_FOREVER, &pubsubLoop, &runner, true);
+Task tPubsub(0, TASK_FOREVER, &pubsubLoop, &runner, false);
 
 Task tFeed(1, TASK_FOREVER, &inspect, &runner, false);
 
@@ -110,32 +110,31 @@ void button() {
 
 void ledControl() {
     if (WiFi.status() == WL_CONNECTED) {
-        digitalWrite(PILOT_LAMP, HIGH);
+//        digitalWrite(PILOT_LAMP, HIGH);
         if (pubsub.connected()) {
+            tPubsub.enableIfNot();
             if (tLed.isEnabled()) tLed.disable();
         } else {
+            if (tPubsub.isEnabled()) tPubsub.disable();
             tLed.setInterval(1000);
-            if (!tLed.isEnabled()) tLed.enable();
+            tLed.enableIfNot();
         }
     } else {
-        digitalWrite(PILOT_LAMP, LOW);
-        if (!tLed.isEnabled()) {
-            tLed.setInterval(350);
-            tLed.enable();
-        }
+//        digitalWrite(PILOT_LAMP, LOW);
+        if (tPubsub.isEnabled()) tPubsub.disable();
+        tLed.setInterval(350);
+        tLed.enableIfNot();
     }
 }
 
 
 void setup() {
-    Serial.begin(9600);
-
     setupPinMode();
     WiFiX::connect();
     Mqtt::connect();
 //timeClient.begin();
 //    setupFs();
-//
+
     stepper.setRpm(12);
     runner.setHighPriorityScheduler(&hRunner);
     runner.enableAll(true);
