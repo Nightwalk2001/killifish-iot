@@ -1,4 +1,5 @@
 #define _TASK_SLEEP_ON_IDLE_RUN
+#define _TASK_MICRO_RES
 #define _TASK_PRIORITY
 
 #include <Arduino.h>
@@ -82,26 +83,26 @@ Task tButton(0, TASK_FOREVER, &button, &hRunner, true);
 
 Task tStepper(0, TASK_FOREVER, &stepperLoop, &runner, true);
 
-Task tCountdown(1000 * 60, TASK_FOREVER, &countdown, &hRunner, false);
+Task tCountdown(TASK_SECOND, TASK_FOREVER, &countdown, &hRunner, false);
 
 Task tPubsub(0, TASK_FOREVER, &pubsubLoop, &runner, false);
 
-Task tFeed(1, TASK_FOREVER, &inspect, &runner, false);
+Task tFeed(100, TASK_FOREVER, &inspect, &runner, false);
 
-Task tLed(350, TASK_FOREVER, &led, &runner, false);
+Task tLed(TASK_MILLISECOND * 350, TASK_FOREVER, &led, &runner, false);
 
-Task tReconnect(1000 * 120, TASK_FOREVER, &reconnect, &runner, true);
+Task tReconnect(TASK_SECOND * 2, TASK_FOREVER, &reconnect, &runner, true);
 
-Task tLedControl(1000 * 10, TASK_FOREVER, &ledControl, &runner, true);
+Task tLedControl(TASK_SECOND * 10, TASK_FOREVER, &ledControl, &runner, true);
 
 void inspect() {
     unsigned long iter = tFeed.getRunCounter();
 
-    if (iter == 0 || iter % 2500 == 1) {
+    if (iter == 0 || iter % (21000 * turns) == 1) {
         digitalWrite(INFRARED_LED, HIGH);
-        stepper.moveCW(2048 * turns);
+        stepper.moveCW(1024 * turns);
     }
-    if (iter > 0 && iter % 2500 == 0) {
+    if (iter > 0 && iter % (21000 * turns) == 0) {
         report();
         tFeed.disable();
     }
