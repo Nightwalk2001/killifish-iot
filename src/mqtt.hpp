@@ -17,12 +17,11 @@ void callback(const char *topic, byte *payload, unsigned int length) {
         if (strcmp(topic, MANUAL_TOPIC) == 0) {
             turns = doc["count"];
             tFeed.enable();
-//            pubsub.publish(TEST_TOPIC, "manual");
         }
         if (strcmp(topic, AUTO_TOPIC) == 0) {
             File f = LittleFS.open(ConfigFile, "w");
             serializeJson(doc["feedings"], f);
-//            pubsub.publish(TEST_TOPIC, "auto");
+            feedings = doc["feedings"];
             f.close();
         }
     }
