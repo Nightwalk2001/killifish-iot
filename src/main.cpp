@@ -30,7 +30,7 @@ void report() {
     if (pubsub.connected()) {
         DynamicJsonDocument doc(128);
         doc["id"] = DEVICE_ID;
-        doc["trigger"] = "manual";
+        doc["trigger"] = trigger;
         doc["amount"] = detected;
         String out;
         serializeJson(doc, out);
