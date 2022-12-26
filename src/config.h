@@ -26,6 +26,8 @@ extern const char *MANUAL_TOPIC;
 extern const char *RESULT_TOPIC;
 extern const char *ERROR_TOPIC;
 
+extern const char *TEST_TOPIC;
+
 extern const uint8 Threshold;
 extern const char *ConfigFile;
 

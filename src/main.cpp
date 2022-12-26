@@ -63,9 +63,23 @@ void led() {
     }
 }
 
+void countdown() {
+    timeClient.update();
+    String now = timeClient.getFormattedTime().substring(0, 5);
+    Serial.println(now);
+    for (JsonObject item: feedings) {
+//        const char *time = item["time"];
+//        long count = item["count"];
+//        Serial.println(time);
+//        Serial.println(count);
+    }
+}
+
 Task tButton(0, TASK_FOREVER, &button, &hRunner, true);
 
 Task tStepper(0, TASK_FOREVER, &stepperLoop, &runner, true);
+
+Task tCountdown(1000 * 60, TASK_FOREVER, &countdown, &hRunner, false);
 
 Task tPubsub(0, TASK_FOREVER, &pubsubLoop, &runner, false);
 
@@ -110,17 +124,17 @@ void button() {
 
 void ledControl() {
     if (WiFi.status() == WL_CONNECTED) {
-//        digitalWrite(PILOT_LAMP, HIGH);
+        tCountdown.enableIfNot();
         if (pubsub.connected()) {
             tPubsub.enableIfNot();
             if (tLed.isEnabled()) tLed.disable();
         } else {
             if (tPubsub.isEnabled()) tPubsub.disable();
-            tLed.setInterval(1000);
+            tLed.setInterval(900);
             tLed.enableIfNot();
         }
     } else {
-//        digitalWrite(PILOT_LAMP, LOW);
+        if (tCountdown.isEnabled()) tCountdown.disable();
         if (tPubsub.isEnabled()) tPubsub.disable();
         tLed.setInterval(350);
         tLed.enableIfNot();
@@ -129,13 +143,15 @@ void ledControl() {
 
 
 void setup() {
+//    Serial.begin(9600);
     setupPinMode();
-    WiFiX::connect();
-    Mqtt::connect();
-//timeClient.begin();
-//    setupFs();
 
     stepper.setRpm(12);
+
+    WiFiX::connect();
+    Mqtt::connect();
+
+    setupFs();
     runner.setHighPriorityScheduler(&hRunner);
     runner.enableAll(true);
 }

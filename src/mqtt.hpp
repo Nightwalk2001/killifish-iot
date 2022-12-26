@@ -9,28 +9,23 @@
 #include <config.h>
 #include <variable.h>
 
-void saveConfig(byte *raw) {
+void callback(const char *topic, byte *payload, unsigned int length) {
     DynamicJsonDocument doc(1024);
 
-    deserializeJson(doc, raw);
-
-    File f = LittleFS.open(ConfigFile, "w");
-    serializeJson(doc, f);
-    f.close();
-}
-
-void callback(const char *topic, byte *payload, unsigned int length) {
-    if (topic == MANUAL_TOPIC) {
-        DynamicJsonDocument doc(1024);
-
-        deserializeJson(doc,payload);
-        if (doc["device"] == DEVICE_ID) {
+    deserializeJson(doc, payload);
+    if (strcmp(doc["device"], DEVICE_ID) == 0) {
+        if (strcmp(topic, MANUAL_TOPIC) == 0) {
             turns = doc["count"];
             tFeed.enable();
+//            pubsub.publish(TEST_TOPIC, "manual");
+        }
+        if (strcmp(topic, AUTO_TOPIC) == 0) {
+            File f = LittleFS.open(ConfigFile, "w");
+            serializeJson(doc["feedings"], f);
+//            pubsub.publish(TEST_TOPIC, "auto");
+            f.close();
         }
     }
-
-    if (topic == AUTO_TOPIC)  saveConfig(payload);
 }
 
 class Mqtt {
@@ -53,6 +48,8 @@ public:
             pubsub.setCallback(callback);
             pubsub.subscribe(AUTO_TOPIC);
             pubsub.subscribe(MANUAL_TOPIC);
+
+//            pubsub.subscribe(TEST_TOPIC);
         }
     };
 };

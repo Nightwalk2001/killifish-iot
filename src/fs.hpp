@@ -10,12 +10,21 @@ void setupFs() {
     if (LittleFS.begin()) {
         File file = LittleFS.open(ConfigFile, "r");
 
-        DynamicJsonDocument config(1024);
-
         if (!file || file.isDirectory()) return;
-        else deserializeJson(config, file);
 
-        feedings = config.as<JsonArray>();
+        if (file.size() > 0) {
+            DynamicJsonDocument config(1024);
+            deserializeJson(config, file);
+            feedings = config.as<JsonArray>();
+//            for (JsonObject item: feedings) {
+//                const char *time = item["time"];
+//                long count = item["count"];
+//                Serial.println(time);
+//                Serial.println(count);
+//            }
+
+            tCountdown.enableIfNot();
+        }
 
         file.close();
     }

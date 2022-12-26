@@ -15,7 +15,7 @@ public:
             delay(1000);
             if (++count >= Threshold) break;
         }
-//        if (count < Threshold) WiFiAvailable = true;
+        timeClient.begin();
     };
 };
 

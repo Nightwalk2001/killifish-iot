@@ -21,12 +21,13 @@ extern unsigned long btnCounter;
 extern int prevState;
 extern int currentState;
 
-extern bool POWER_LED_ON;
+extern volatile bool POWER_LED_ON;
 
 extern uint8 turns;
 extern uint detected;
 
 extern Task tFeed;
 extern Task tPubsub;
+extern Task tCountdown;
 
 #endif
