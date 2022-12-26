@@ -28,7 +28,7 @@ void report() {
     digitalWrite(INFRARED_LED, LOW);
 
     if (pubsub.connected()) {
-        DynamicJsonDocument doc(1024);
+        DynamicJsonDocument doc(128);
         doc["id"] = DEVICE_ID;
         doc["trigger"] = "manual";
         doc["amount"] = detected;
@@ -72,6 +72,7 @@ void countdown() {
 
         if (strcmp(now.c_str(), time) == 0) {
             turns = count;
+            trigger = "auto";
             tFeed.enableIfNot();
         }
     }
@@ -116,6 +117,7 @@ void button() {
             unsigned long diff = millis() - btnCounter;
             if (diff < LONG_PRESS_DURATION && diff >= PRESS_DURATION) {
                 turns = 1;
+                trigger = "physical";
                 tFeed.enable();
             };
             if (diff >= LONG_PRESS_DURATION) reset();

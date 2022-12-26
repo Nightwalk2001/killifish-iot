@@ -18,3 +18,4 @@ volatile bool POWER_LED_ON = false;
 
 uint8 turns = 0;
 uint detected = 0;
+bool trigger;

@@ -16,6 +16,7 @@ void callback(const char *topic, byte *payload, unsigned int length) {
     if (strcmp(doc["device"], DEVICE_ID) == 0) {
         if (strcmp(topic, MANUAL_TOPIC) == 0) {
             turns = doc["count"];
+            trigger = "network";
             tFeed.enable();
         }
         if (strcmp(topic, AUTO_TOPIC) == 0) {
