@@ -66,12 +66,14 @@ void led() {
 void countdown() {
     timeClient.update();
     String now = timeClient.getFormattedTime().substring(0, 5);
-    Serial.println(now);
-    for (JsonObject item: feedings) {
-//        const char *time = item["time"];
-//        long count = item["count"];
-//        Serial.println(time);
-//        Serial.println(count);
+    for (const auto &item: feedings) {
+        const char *time = item["time"];
+        long count = item["count"];
+
+        if (strcmp(now.c_str(), time) == 0) {
+            turns = count;
+            tFeed.enableIfNot();
+        }
     }
 }
 
@@ -141,9 +143,7 @@ void ledControl() {
     }
 }
 
-
 void setup() {
-//    Serial.begin(9600);
     setupPinMode();
 
     stepper.setRpm(12);
@@ -152,6 +152,7 @@ void setup() {
     Mqtt::connect();
 
     setupFs();
+
     runner.setHighPriorityScheduler(&hRunner);
     runner.enableAll(true);
 }

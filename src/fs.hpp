@@ -12,18 +12,10 @@ void setupFs() {
 
         if (!file || file.isDirectory()) return;
 
-        if (file.size() > 0) {
-            DynamicJsonDocument config(1024);
-            deserializeJson(config, file);
-            feedings = config.as<JsonArray>();
-//            for (JsonObject item: feedings) {
-//                const char *time = item["time"];
-//                long count = item["count"];
-//                Serial.println(time);
-//                Serial.println(count);
-//            }
-
-            tCountdown.enableIfNot();
+        if (file.available() > 0) {
+            deserializeJson(configDocument, file);
+            feedings = configDocument.as<JsonArray>();
+            if (WiFi.status()==WL_CONNECTED) tCountdown.enableIfNot();
         }
 
         file.close();

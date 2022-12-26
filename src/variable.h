@@ -15,6 +15,7 @@ extern PubSubClient pubsub;
 extern NTPClient timeClient;
 extern CheapStepper stepper;
 
+extern DynamicJsonDocument configDocument;
 extern JsonArray feedings;
 
 extern unsigned long btnCounter;
