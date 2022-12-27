@@ -97,11 +97,11 @@ Task tLedControl(1000 * 10, TASK_FOREVER, &ledControl, &runner, true);
 void inspect() {
     unsigned long iter = tFeed.getRunCounter();
 
-    if (iter == 0 || iter % 2500 == 1) {
+    if (iter == 0 || iter % (2100 * turns) == 1) {
         digitalWrite(INFRARED_LED, HIGH);
         stepper.moveCW(2048 * turns);
     }
-    if (iter > 0 && iter % 2500 == 0) {
+    if (iter > 0 && iter % (2100 * turns) == 0) {
         report();
         tFeed.disable();
     }
