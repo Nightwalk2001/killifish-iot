@@ -26,7 +26,7 @@ extern volatile bool POWER_LED_ON;
 
 extern uint8 turns;
 extern uint detected;
-extern bool trigger;
+extern String trigger;
 
 extern Task tFeed;
 extern Task tPubsub;

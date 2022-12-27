@@ -66,10 +66,10 @@ void led() {
 void countdown() {
     timeClient.update();
     String now = timeClient.getFormattedTime().substring(0, 5);
+
     for (const auto &item: feedings) {
         const char *time = item["time"];
         long count = item["count"];
-
         if (strcmp(now.c_str(), time) == 0) {
             turns = count;
             trigger = "auto";
