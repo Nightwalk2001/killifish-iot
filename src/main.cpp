@@ -31,6 +31,7 @@ void report() {
         DynamicJsonDocument doc(128);
         doc["id"] = DEVICE_ID;
         doc["trigger"] = trigger;
+        doc["times"] = turns;
         doc["amount"] = detected;
         String out;
         serializeJson(doc, out);
@@ -100,7 +101,7 @@ void inspect() {
 
     if (iter == 0 || iter % 2100 == 1) {
         digitalWrite(INFRARED_LED, HIGH);
-        stepper.moveCW(2048 * turns);
+        stepper.moveCW(1024 * turns);
     }
     if (iter > 0 && iter % 2100 == 0) {
         report();
