@@ -70,6 +70,7 @@ void countdown() {
     for (const auto &item: feedings) {
         const char *time = item["time"];
         long count = item["count"];
+
         if (strcmp(now.c_str(), time) == 0) {
             turns = count;
             trigger = "auto";
@@ -97,11 +98,11 @@ Task tLedControl(1000 * 10, TASK_FOREVER, &ledControl, &runner, true);
 void inspect() {
     unsigned long iter = tFeed.getRunCounter();
 
-    if (iter == 0 || iter % (2100 * turns) == 1) {
+    if (iter == 0 || iter % 2100 == 1) {
         digitalWrite(INFRARED_LED, HIGH);
         stepper.moveCW(2048 * turns);
     }
-    if (iter > 0 && iter % (2100 * turns) == 0) {
+    if (iter > 0 && iter % 2100 == 0) {
         report();
         tFeed.disable();
     }
