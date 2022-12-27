@@ -30,6 +30,7 @@ extern String trigger;
 
 extern Task tFeed;
 extern Task tPubsub;
+extern Task tLedControl;
 extern Task tCountdown;
 
 #endif

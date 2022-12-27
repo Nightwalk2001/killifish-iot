@@ -43,6 +43,7 @@ void report() {
 
 void reconnect() {
     if (WiFi.status() != WL_CONNECTED) {
+        tLedControl.disable();
         WiFiX::connect();
         if (WiFi.status() == WL_CONNECTED) Mqtt::connect();
     } else {
@@ -55,13 +56,8 @@ void stepperLoop() {
 }
 
 void led() {
-    if (POWER_LED_ON) {
-        digitalWrite(PILOT_LAMP, LOW);
-        POWER_LED_ON = false;
-    } else {
-        digitalWrite(PILOT_LAMP, HIGH);
-        POWER_LED_ON = true;
-    }
+    if (digitalRead(PILOT_LAMP) == HIGH) digitalWrite(PILOT_LAMP, LOW);
+    else digitalWrite(PILOT_LAMP, HIGH);
 }
 
 void countdown() {
