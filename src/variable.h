@@ -22,8 +22,6 @@ extern unsigned long btnCounter;
 extern int prevState;
 extern int currentState;
 
-extern volatile bool POWER_LED_ON;
-
 extern uint8 turns;
 extern uint detected;
 extern String trigger;

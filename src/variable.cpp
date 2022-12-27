@@ -14,8 +14,6 @@ unsigned long btnCounter = 0;
 int prevState = HIGH;
 int currentState = HIGH;
 
-volatile bool POWER_LED_ON = false;
-
 uint8 turns = 0;
 uint detected = 0;
 String trigger;

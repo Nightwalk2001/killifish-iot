@@ -132,13 +132,10 @@ void ledControl() {
             if (tLed.isEnabled()) tLed.disable();
         } else {
             if (tPubsub.isEnabled()) tPubsub.disable();
-            tLed.setInterval(900);
-            tLed.enableIfNot();
         }
     } else {
         if (tCountdown.isEnabled()) tCountdown.disable();
         if (tPubsub.isEnabled()) tPubsub.disable();
-        tLed.setInterval(350);
         tLed.enableIfNot();
     }
 }
