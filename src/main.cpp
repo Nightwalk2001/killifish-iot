@@ -76,7 +76,7 @@ void countdown() {
     }
 }
 
-Task tButton(0, TASK_FOREVER, &button, &hRunner, true);
+Task tButton(0, TASK_FOREVER, &button, &hRunner, false);
 
 Task tStepper(0, TASK_FOREVER, &stepperLoop, &runner, true);
 
@@ -126,6 +126,7 @@ void button() {
 
 void ledControl() {
     if (WiFi.status() == WL_CONNECTED) {
+        digitalWrite(PILOT_LAMP, HIGH);
         tCountdown.enableIfNot();
         if (pubsub.connected()) {
             tPubsub.enableIfNot();
@@ -134,6 +135,7 @@ void ledControl() {
             if (tPubsub.isEnabled()) tPubsub.disable();
         }
     } else {
+        digitalWrite(PILOT_LAMP, LOW);
         if (tCountdown.isEnabled()) tCountdown.disable();
         if (tPubsub.isEnabled()) tPubsub.disable();
         tLed.enableIfNot();
@@ -151,7 +153,6 @@ void setup() {
     setupFs();
 
     runner.setHighPriorityScheduler(&hRunner);
-    runner.enableAll(true);
 }
 
 void loop() {
