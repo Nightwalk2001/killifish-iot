@@ -13,8 +13,17 @@ public:
         WiFi.begin(SSID, PASSPHRASE);
         while (WiFi.status() != WL_CONNECTED) {
             delay(1000);
-            if (++count >= Threshold) break;
+            if (++count >= Threshold) {
+                if (tCountdown.isEnabled()) { tCountdown.disable(); }
+                tLed.enableIfNot();
+                return;
+            };
         }
+        tCountdown.enableIfNot();
+
+        if (tLed.isEnabled()) { tLed.disable(); }
+
+        digitalWrite(PILOT_LAMP, HIGH);
         timeClient.begin();
     };
 };

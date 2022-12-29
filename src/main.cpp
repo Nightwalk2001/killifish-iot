@@ -10,7 +10,7 @@
 #include <mqtt.hpp>
 #include <fs.hpp>
 
-Scheduler runner, hRunner;
+Scheduler runner;
 
 void button();
 
@@ -18,7 +18,7 @@ void stepperLoop();
 
 void inspect();
 
-void ledControl();
+//void ledControl();
 
 void pubsubLoop() {
     pubsub.loop();
@@ -43,7 +43,7 @@ void report() {
 
 void reconnect() {
     if (WiFi.status() != WL_CONNECTED) {
-        tLedControl.disable();
+//        tLedControl.disable();
         WiFiX::connect();
         if (WiFi.status() == WL_CONNECTED) Mqtt::connect();
     } else {
@@ -76,21 +76,21 @@ void countdown() {
     }
 }
 
-Task tButton(0, TASK_FOREVER, &button, &hRunner, false);
+Task tButton(0, TASK_FOREVER, &button, &runner, true);
 
 Task tStepper(0, TASK_FOREVER, &stepperLoop, &runner, true);
 
-Task tCountdown(1000 * 60, TASK_FOREVER, &countdown, &hRunner, false);
+Task tCountdown(1000 * 60, TASK_FOREVER, &countdown, &runner, false);
 
-Task tPubsub(0, TASK_FOREVER, &pubsubLoop, &runner, false);
+Task tPubsub(0, TASK_FOREVER, &pubsubLoop, &runner, true);
 
 Task tFeed(1, TASK_FOREVER, &inspect, &runner, false);
 
 Task tLed(350, TASK_FOREVER, &led, &runner, false);
 
-Task tReconnect(1000 * 120, TASK_FOREVER, &reconnect, &runner, true);
+Task tReconnect(1000 * 60, TASK_FOREVER, &reconnect, &runner, true);
 
-Task tLedControl(1000 * 10, TASK_FOREVER, &ledControl, &runner, true);
+//Task tLedControl(1000 * 10, TASK_FOREVER, &ledControl, &runner, true);
 
 void inspect() {
     unsigned long iter = tFeed.getRunCounter();
@@ -124,23 +124,18 @@ void button() {
     }
 }
 
-void ledControl() {
-    if (WiFi.status() == WL_CONNECTED) {
-        digitalWrite(PILOT_LAMP, HIGH);
-        tCountdown.enableIfNot();
-        if (pubsub.connected()) {
-            tPubsub.enableIfNot();
-            if (tLed.isEnabled()) tLed.disable();
-        } else {
-            if (tPubsub.isEnabled()) tPubsub.disable();
-        }
-    } else {
-        digitalWrite(PILOT_LAMP, LOW);
-        if (tCountdown.isEnabled()) tCountdown.disable();
-        if (tPubsub.isEnabled()) tPubsub.disable();
-        tLed.enableIfNot();
-    }
-}
+//void ledControl() {
+//    if (WiFi.status() == WL_CONNECTED) {
+//        tCountdown.enableIfNot();
+//        if (tLed.isEnabled()) {
+//            tLed.disable();
+//            digitalWrite(PILOT_LAMP, HIGH);
+//        }
+//    } else {
+//        if (tCountdown.isEnabled()) tCountdown.disable();
+//        tLed.enableIfNot();
+//    }
+//}
 
 void setup() {
     setupPinMode();
@@ -151,8 +146,6 @@ void setup() {
     Mqtt::connect();
 
     setupFs();
-
-    runner.setHighPriorityScheduler(&hRunner);
 }
 
 void loop() {
