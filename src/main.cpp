@@ -56,8 +56,13 @@ void stepperLoop() {
 }
 
 void led() {
-    if (digitalRead(PILOT_LAMP) == HIGH) digitalWrite(PILOT_LAMP, LOW);
-    else digitalWrite(PILOT_LAMP, HIGH);
+    if (pilotLampOn) {
+        digitalWrite(PILOT_LAMP, LOW);
+        pilotLampOn = false;
+    } else {
+        digitalWrite(PILOT_LAMP, HIGH);
+        pilotLampOn = true;
+    }
 }
 
 void countdown() {
@@ -86,9 +91,9 @@ Task tPubsub(0, TASK_FOREVER, &pubsubLoop, &runner, true);
 
 Task tFeed(1, TASK_FOREVER, &inspect, &runner, false);
 
-Task tLed(350, TASK_FOREVER, &led, &runner, false);
+Task tLed(500, TASK_FOREVER, &led, &runner, false);
 
-Task tReconnect(1000 * 60, TASK_FOREVER, &reconnect, &runner, true);
+Task tReconnect(1000 * 120, TASK_FOREVER, &reconnect, &runner, true);
 
 //Task tLedControl(1000 * 10, TASK_FOREVER, &ledControl, &runner, true);
 
@@ -143,7 +148,7 @@ void setup() {
     stepper.setRpm(12);
 
     WiFiX::connect();
-    Mqtt::connect();
+    if (WiFi.status() == WL_CONNECTED) Mqtt::connect();
 
     setupFs();
 }

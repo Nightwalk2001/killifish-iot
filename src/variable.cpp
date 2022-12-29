@@ -10,6 +10,8 @@ CheapStepper stepper(IN1, IN2, IN3, IN4);
 DynamicJsonDocument configDocument(1024);
 JsonArray feedings;
 
+bool pilotLampOn = false;
+
 unsigned long btnCounter = 0;
 int prevState = HIGH;
 int currentState = HIGH;

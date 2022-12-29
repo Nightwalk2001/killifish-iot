@@ -18,6 +18,8 @@ extern CheapStepper stepper;
 extern DynamicJsonDocument configDocument;
 extern JsonArray feedings;
 
+extern bool pilotLampOn;
+
 extern unsigned long btnCounter;
 extern int prevState;
 extern int currentState;

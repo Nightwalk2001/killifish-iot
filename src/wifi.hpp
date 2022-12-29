@@ -14,16 +14,17 @@ public:
         while (WiFi.status() != WL_CONNECTED) {
             delay(1000);
             if (++count >= Threshold) {
-                if (tCountdown.isEnabled()) { tCountdown.disable(); }
+                tCountdown.disable();
                 tLed.enableIfNot();
                 return;
             };
         }
         tCountdown.enableIfNot();
 
-        if (tLed.isEnabled()) { tLed.disable(); }
+        tLed.disable();
 
         digitalWrite(PILOT_LAMP, HIGH);
+        pilotLampOn = true;
         timeClient.begin();
     };
 };

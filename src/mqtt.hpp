@@ -44,7 +44,7 @@ public:
             if (pubsub.connect(DEVICE_ID, USER, PASSWORD) || ++count > Threshold) break;
         }
         if (count < Threshold) {
-            tPubsub.enableIfNot();
+//            tPubsub.enableIfNot();
             pubsub.setCallback(callback);
             pubsub.subscribe(AUTO_TOPIC);
             pubsub.subscribe(MANUAL_TOPIC);
