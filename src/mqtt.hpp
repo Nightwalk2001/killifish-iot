@@ -41,26 +41,26 @@ public:
 
         while (!pubsub.connected()) {
             delay(1000);
-            if (pubsub.connect(DEVICE_ID, USER, PASSWORD) || ++count > Threshold) break;
+            if (pubsub.connect(DEVICE_ID, USER, PASSWORD,
+                               WILL_TOPIC, 0, false, DEVICE_ID) || ++count > Threshold)
+                break;
         }
         if (count < Threshold) {
 //            tPubsub.enableIfNot();
             pubsub.setCallback(callback);
             pubsub.subscribe(AUTO_TOPIC);
             pubsub.subscribe(MANUAL_TOPIC);
-
-//            pubsub.subscribe(TEST_TOPIC);
         }
     };
 };
 
-void error(const char *message) {
-    DynamicJsonDocument doc(1024);
-    doc["message"] = message;
-    doc["id"] = DEVICE_ID;
-    String out;
-    serializeJson(doc, out);
-    pubsub.publish(ERROR_TOPIC, out.c_str());
-}
+//void error(const char *message) {
+//    DynamicJsonDocument doc(1024);
+//    doc["message"] = message;
+//    doc["id"] = DEVICE_ID;
+//    String out;
+//    serializeJson(doc, out);
+//    pubsub.publish(ERROR_TOPIC, out.c_str());
+//}
 
 #endif

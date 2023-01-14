@@ -15,16 +15,16 @@ public:
             delay(1000);
             if (++count >= Threshold) {
                 tCountdown.disable();
-                tLed.enableIfNot();
+//                tLed.enableIfNot();
                 return;
             };
         }
         tCountdown.enableIfNot();
 
-        tLed.disable();
+//        tLed.disable();
 
-        digitalWrite(PILOT_LAMP, HIGH);
-        pilotLampOn = true;
+//        digitalWrite(PILOT_LAMP, HIGH);
+//        pilotLampOn = true;
         timeClient.begin();
     };
 };

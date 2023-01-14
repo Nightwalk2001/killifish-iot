@@ -7,8 +7,6 @@ project("killifish-iot" C CXX)
 
 include(CMakeListsPrivate.txt)
 
-include_directories(.pio/libdeps/d1_mini/NTPClient)
-
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/CMakeListsUser.txt)
     include(CMakeListsUser.txt)
 endif()

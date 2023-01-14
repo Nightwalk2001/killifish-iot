@@ -4,12 +4,12 @@
 #include <Arduino.h>
 
 #define BTN D5
-#define INFRARED A0
-#define INFRARED_LED D6
-#define PILOT_LAMP D4
+#define INFRARED D6
+#define INFRARED_LED D2
+#define PILOT_LAMP D0
 #define IN1 D7
-#define IN2 D2
-#define IN3 D8
+#define IN2 D8
+#define IN3 D2
 #define IN4 D1
 
 extern const char *DEVICE_ID;
@@ -24,9 +24,7 @@ extern const char *PASSWORD;
 extern const char *AUTO_TOPIC;
 extern const char *MANUAL_TOPIC;
 extern const char *RESULT_TOPIC;
-extern const char *ERROR_TOPIC;
-
-extern const char *TEST_TOPIC;
+extern const char *WILL_TOPIC;
 
 extern const uint8 Threshold;
 extern const char *ConfigFile;

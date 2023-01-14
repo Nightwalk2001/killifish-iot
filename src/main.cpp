@@ -55,15 +55,15 @@ void stepperLoop() {
     stepper.run();
 }
 
-void led() {
-    if (pilotLampOn) {
-        digitalWrite(PILOT_LAMP, LOW);
-        pilotLampOn = false;
-    } else {
-        digitalWrite(PILOT_LAMP, HIGH);
-        pilotLampOn = true;
-    }
-}
+//void led() {
+//    if (pilotLampOn) {
+//        digitalWrite(PILOT_LAMP, LOW);
+//        pilotLampOn = false;
+//    } else {
+//        digitalWrite(PILOT_LAMP, HIGH);
+//        pilotLampOn = true;
+//    }
+//}
 
 void countdown() {
     timeClient.update();
@@ -76,6 +76,7 @@ void countdown() {
         if (strcmp(now.c_str(), time) == 0) {
             turns = count;
             trigger = "auto";
+//            pubsub.publish("countdown", now.c_str());
             tFeed.enableIfNot();
         }
     }
@@ -91,7 +92,7 @@ Task tPubsub(0, TASK_FOREVER, &pubsubLoop, &runner, true);
 
 Task tFeed(1, TASK_FOREVER, &inspect, &runner, false);
 
-Task tLed(500, TASK_FOREVER, &led, &runner, false);
+//Task tLed(500, TASK_FOREVER, &led, &runner, false);
 
 Task tReconnect(1000 * 120, TASK_FOREVER, &reconnect, &runner, true);
 
