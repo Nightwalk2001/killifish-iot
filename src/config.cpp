@@ -2,10 +2,10 @@
 
 const char *DEVICE_ID = "01A03";
 
-const char *SSID = "mqtt";
-const char *PASSPHRASE = "12345678";
+const char *SSID = "KNF_auto";
+const char *PASSPHRASE = "WLreg10jq";
 
-const char *BROKER = "120.79.40.242";
+const char *BROKER = "192.168.235.14";
 const int PORT = 1883;
 const char *USER = "tank_group1";
 const char *PASSWORD = "tank_group1";
